@@ -6,10 +6,18 @@ var max = function(x, y) {
     }
 };
 
+var MIDINoteNumber = function (pitch) {
+    var noteOffsets = { 'c': 0, 'd': 2, 'e': 4, 'f': 5, 'g': 7, 'a': 9, 'b': 11};
+    var octave = parseInt(pitch[1]);
+    var baseNumber = 12 * (octave + 1);
+    var offset = noteOffsets[pitch[0]];
+    return baseNumber + offset;
+}
+
 var compileToResult = function(musexpr, startTime, result) {
     var endTime = startTime;
     if ('note' === musexpr.tag) {
-        result.push({ tag: 'note', pitch: musexpr.pitch,
+        result.push({ tag: 'note', pitch: MIDINoteNumber(musexpr.pitch),
                      start: startTime, dur: musexpr.dur });
         endTime = endTime + musexpr.dur;
     } else if ('rest' === musexpr.tag) {

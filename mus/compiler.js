@@ -12,6 +12,8 @@ var compileToResult = function(musexpr, startTime, result) {
         result.push({ tag: 'note', pitch: musexpr.pitch,
                      start: startTime, dur: musexpr.dur });
         endTime = endTime + musexpr.dur;
+    } else if ('rest' === musexpr.tag) {
+        endTime = endTime + musexpr.duration;
     } else if ('seq' === musexpr.tag) {
         endTime = compileToResult(musexpr.left, startTime, result);
         endTime = compileToResult(musexpr.right, endTime, result);

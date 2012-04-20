@@ -29,6 +29,12 @@ var compileToResult = function(musexpr, startTime, result) {
         var leftEndTime = compileToResult(musexpr.left, startTime, result);
         var rightEndTime = compileToResult(musexpr.right, startTime, result);
         endTime = max(leftEndTime, rightEndTime);
+    } else if ('repeat' === musexpr.tag) {
+        var i = 0;
+        while (i < musexpr.count) {
+            endTime = compileToResult(musexpr.section, endTime, result);
+            i++;
+        }
     }
     return endTime;
 };
@@ -48,7 +54,9 @@ var melody_mus =
          right: { tag: 'note', pitch: 'b4', dur: 250 } },
       right:
        { tag: 'seq',
-         left: { tag: 'note', pitch: 'c4', dur: 500 },
+         left: { tag: 'repeat',
+                section: { tag: 'note', pitch: 'c4', dur: 250 },
+                count: 3 },
          right: { tag: 'note', pitch: 'd4', dur: 500 } } };
 
 console.log(melody_mus);

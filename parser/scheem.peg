@@ -1,8 +1,8 @@
 start =
     expression
 
-validchar
-    = [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+validchar =
+    [0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
 atom =
     chars:validchar+

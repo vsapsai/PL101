@@ -4,6 +4,9 @@ start =
 validchar =
     [0-9a-zA-Z_?!+\-=@#$%^&*/.]
 
+quote_char =
+    "'"
+
 atom =
     chars:validchar+
         { return chars.join(""); }
@@ -27,3 +30,5 @@ expression =
     	{ return single; }
   / whitespace* "(" whitespace* multiple:expression_list whitespace* ")" whitespace*
   		{ return multiple; }
+  / whitespace* quote_char quoted_expression:expression
+        { return ["quote", quoted_expression]; }

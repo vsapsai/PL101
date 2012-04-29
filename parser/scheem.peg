@@ -17,6 +17,9 @@ whitespace_char =
 whitespace =
     whitespace_char+
 
+whitespace_opt =
+    whitespace_char*
+
 spaced_expression =
 	whitespace expr:expression
     	{ return expr; }
@@ -28,7 +31,7 @@ expression_list =
 expression =
 	single:atom
     	{ return single; }
-  / whitespace* "(" whitespace* multiple:expression_list whitespace* ")" whitespace*
+  / whitespace_opt "(" whitespace_opt multiple:expression_list whitespace_opt ")" whitespace_opt
   		{ return multiple; }
-  / whitespace* quote_char quoted_expression:expression
+  / whitespace_opt quote_char quoted_expression:expression
         { return ["quote", quoted_expression]; }

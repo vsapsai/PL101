@@ -8,8 +8,11 @@ atom =
     chars:validchar+
         { return chars.join(""); }
 
+whitespace_char =
+    " "+
+
 spaced_expression =
-	" " expr:expression
+	whitespace_char expr:expression
     	{ return expr; }
 
 expression_list =

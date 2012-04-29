@@ -9,10 +9,13 @@ atom =
         { return chars.join(""); }
 
 whitespace_char =
-    " "+
+    [ \n\t]
+
+whitespace =
+    whitespace_char+
 
 spaced_expression =
-	whitespace_char expr:expression
+	whitespace expr:expression
     	{ return expr; }
 
 expression_list =
@@ -22,5 +25,5 @@ expression_list =
 expression =
 	single:atom
     	{ return single; }
-  / whitespace_char* "(" whitespace_char* multiple:expression_list whitespace_char* ")" whitespace_char*
+  / whitespace* "(" whitespace* multiple:expression_list whitespace* ")" whitespace*
   		{ return multiple; }

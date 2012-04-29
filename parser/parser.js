@@ -26,3 +26,7 @@ assert.deepEqual( parse("(a  b)"), ["a", "b"] );
 assert.deepEqual( parse("(ab)"), ["ab"] );
 // -- spaces around parentheses
 assert.deepEqual( parse(" ( a b  )"), ["a", "b"] );
+// -- tabs and newlines are allowed too
+assert.deepEqual( parse("(a\tb)"), ["a", "b"] );
+assert.deepEqual( parse("(a\nb)"), ["a", "b"] );
+assert.deepEqual( parse(" (a \nb\t )\n"), ["a", "b"] );

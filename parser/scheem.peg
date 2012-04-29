@@ -15,10 +15,15 @@ whitespace_char =
     [ \n\t]
 
 whitespace =
-    whitespace_char+
+    whitespace_char* comment whitespace_char*
+  / whitespace_char+
 
 whitespace_opt =
-    whitespace_char*
+    whitespace
+  / ""
+
+comment =
+    ";;" [^\n]* "\n"?
 
 spaced_expression =
     whitespace expr:expression

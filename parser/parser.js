@@ -38,3 +38,9 @@ assert.deepEqual( parse("'x"), ["quote", "x"] );
 assert.deepEqual( parse("'(a b)"), ["quote", ["a", "b"]] );
 assert.deepEqual( parse(" ''x"), ["quote", ["quote", "x"]] ); // this is ridiculous but correct
 assert.deepEqual( parse("' (a b)"), ["quote", ["a", "b"]] ); // don't like space between ' and (, but not gonna fight with it
+
+// -- comments support
+assert.deepEqual( parse("(a b);;comment"), ["a", "b"] );
+assert.deepEqual( parse("(a b) ;;comment"), ["a", "b"] ); // whitespace before comment
+assert.deepEqual( parse("(+ a ;; comment\n\tb)"), ["+", "a", "b"] ); // whitespace after comment
+assert.deepEqual( parse("(a;;b\nc)"), ["a", "c"] );

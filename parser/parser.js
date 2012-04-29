@@ -25,8 +25,9 @@ assert.deepEqual( parse("((x))"), [["x"]] );
 // -- variable number of spaces between subexpressions in expression
 assert.deepEqual( parse("(a  b)"), ["a", "b"] );
 assert.deepEqual( parse("(ab)"), ["ab"] );
-// -- spaces around parentheses
+// -- spaces around parentheses and atoms
 assert.deepEqual( parse(" ( a b  )"), ["a", "b"] );
+//assert.equal( parse(" atom\n"), "atom" ); // XFAIL - vsapsai: don't know how to implement it
 // -- tabs and newlines are allowed too
 assert.deepEqual( parse("(a\tb)"), ["a", "b"] );
 assert.deepEqual( parse("(a\nb)"), ["a", "b"] );

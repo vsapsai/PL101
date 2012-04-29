@@ -22,5 +22,5 @@ expression_list =
 expression =
 	single:atom
     	{ return single; }
-  / "(" multiple:expression_list ")"
+  / whitespace_char* "(" whitespace_char* multiple:expression_list whitespace_char* ")" whitespace_char*
   		{ return multiple; }

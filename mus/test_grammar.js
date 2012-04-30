@@ -55,4 +55,29 @@ assert.deepEqual(parse("repeat 3 a4 100", "repeat"),
     {tag:"repeat", count:3,
     section: {tag:"note", pitch:"a4", dur:100}});
 
+// -- parentheses and mix of seq & par & repeat
+assert.deepEqual(parse("a4 100, c5 50; e4 250"),
+    {tag:"par",
+    left: {tag:"note", pitch:"a4", dur:100},
+    right: {tag:"seq",
+        left: {tag:"note", pitch:"c5", dur:50},
+        right: {tag:"note", pitch:"e4", dur:250}}});
+assert.deepEqual(parse("(a4 100, c5 50); e4 250"),
+    {tag:"seq",
+    left: {tag:"par",
+        left: {tag:"note", pitch:"a4", dur:100},
+        right: {tag:"note", pitch:"c5", dur:50}},
+    right: {tag:"note", pitch:"e4", dur:250}});
+// add repeat to the mix
+assert.deepEqual(parse("repeat 3 a4 100; c5 50"),
+    {tag:"repeat", count:3,
+    section: {tag:"seq",
+             left: {tag:"note", pitch:"a4", dur:100},
+             right: {tag:"note", pitch:"c5", dur:50}}});
+assert.deepEqual(parse("(repeat 3 a4 100); c5 50"),
+    {tag:"seq",
+    left: {tag:"repeat", count:3,
+            section: {tag:"note", pitch:"a4", dur:100}},
+    right: {tag:"note", pitch:"c5", dur:50}});
+
 console.log('tests passed');

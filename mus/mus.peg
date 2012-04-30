@@ -1,5 +1,5 @@
 start =
-    note
+    expression
 
 valid_note_char =
     [cdefgab]
@@ -35,17 +35,24 @@ rest =
         { return {tag:"rest", dur:duration}; }
 
 sequence =
-    left:note whitespace_opt ";" whitespace_opt right:sequence
+    left:repeat whitespace_opt ";" whitespace_opt right:sequence
         { return {tag:"seq", left:left, right:right}; }
-  / left:note whitespace_opt ";" whitespace_opt right:note
-        { return {tag:"seq", left:left, right:right}; }
+  / repeat
 
 parallel =
-    left:note whitespace_opt "," whitespace_opt right:parallel
+    left:sequence whitespace_opt "," whitespace_opt right:parallel
         { return {tag:"par", left:left, right:right}; }
-  / left:note whitespace_opt "," whitespace_opt right:note
-        { return {tag:"par", left:left, right:right}; }
+  / sequence
 
 repeat =
-    "repeat" duration_separator count:integer whitespace section:note
+    "repeat" duration_separator count:integer whitespace section:expression
         { return {tag:"repeat", count:count, section:section}; }
+  / primary
+
+primary =
+    note
+  / "(" expression:expression ")"
+        { return expression; }
+
+expression =
+    parallel

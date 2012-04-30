@@ -14,5 +14,7 @@ var parse = PEG.buildParser(data).parse;
 // Do tests
 assert.deepEqual(parse("a4 100", "note"),
     {tag:"note", pitch:"a4", dur:100});
+assert.deepEqual(parse("_ 200", "rest"),
+	{tag:"rest", dur:200});
 
 console.log('tests passed');

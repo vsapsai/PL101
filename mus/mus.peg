@@ -10,6 +10,13 @@ integer =
   / first:[1-9] rest:[0-9]*
         { return parseInt([first].concat(rest).join("")); }
 
+// It is stupid to require exactly 1 space between pitch and duration, but I
+// want some separator between those and space looks like the easiest separator
+// to print.
 note =
     pitch:valid_note_char octave:integer " " duration:integer
         { return {tag:"note", pitch:("" + pitch + octave), dur:duration}; }
+
+rest =
+    "_" " " duration:integer
+        { return {tag:"rest", dur:duration}; }

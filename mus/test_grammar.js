@@ -50,4 +50,9 @@ assert.deepEqual(parse("a4 100, c5 50, e4 250", "parallel"),
         left: {tag:"note", pitch:"c5", dur:50},
         right: {tag:"note", pitch:"e4", dur:250}}});
 
+// -- repeat
+assert.deepEqual(parse("repeat 3 a4 100", "repeat"),
+    {tag:"repeat", count:3,
+    section: {tag:"note", pitch:"a4", dur:100}});
+
 console.log('tests passed');

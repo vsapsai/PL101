@@ -45,3 +45,7 @@ parallel =
         { return {tag:"par", left:left, right:right}; }
   / left:note whitespace_opt "," whitespace_opt right:note
         { return {tag:"par", left:left, right:right}; }
+
+repeat =
+    "repeat" duration_separator count:integer whitespace section:note
+        { return {tag:"repeat", count:count, section:section}; }

@@ -37,6 +37,10 @@ assert.deepEqual(parse("a4 100; c5 50; e4 250", "sequence"),
     right: {tag:"seq",
         left: {tag:"note", pitch:"c5", dur:50},
         right: {tag:"note", pitch:"e4", dur:250}}});
+assert.deepEqual(parse("_ 100; a4 100", "sequence"),
+    {tag:"seq",
+    left: {tag:"rest", dur:100},
+    right: {tag:"note", pitch:"a4", dur:100}});
 
 // -- par
 assert.deepEqual(parse("a4 100, c5 50", "parallel"),

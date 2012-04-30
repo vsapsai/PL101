@@ -55,5 +55,6 @@ repeat =
 
 primary =
     note
+  / rest
   / "(" expression:expression ")"
         { return expression; }

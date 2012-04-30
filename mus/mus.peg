@@ -1,0 +1,15 @@
+start =
+    note
+
+valid_note_char =
+    [cdefgab]
+
+integer =
+    "0"
+        { return 0; }
+  / first:[1-9] rest:[0-9]*
+        { return parseInt([first].concat(rest).join("")); }
+
+note =
+    pitch:valid_note_char octave:integer " " duration:integer
+        { return {tag:"note", pitch:("" + pitch + octave), dur:duration}; }

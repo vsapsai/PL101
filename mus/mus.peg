@@ -56,5 +56,5 @@ repeat =
 primary =
     note
   / rest
-  / "(" expression:expression ")"
+  / whitespace_opt "(" whitespace_opt expression:expression whitespace_opt ")" whitespace_opt
         { return expression; }

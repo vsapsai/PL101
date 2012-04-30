@@ -84,4 +84,11 @@ assert.deepEqual(parse("(repeat 3 a4 100); c5 50"),
             section: {tag:"note", pitch:"a4", dur:100}},
     right: {tag:"note", pitch:"c5", dur:50}});
 
+// -- more parentheses flexibility
+var expectedNote = {tag:"note", pitch:"a4", dur:100};
+assert.deepEqual(parse("(a4 100)"), expectedNote);
+assert.deepEqual(parse(" ( a4 100\n)\t"), expectedNote);
+
+//TODO: allow trailing seq, par separators
+
 console.log('tests passed');

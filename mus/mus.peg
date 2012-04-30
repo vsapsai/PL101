@@ -10,6 +10,16 @@ integer =
   / first:[1-9] rest:[0-9]*
         { return parseInt([first].concat(rest).join("")); }
 
+whitespace_char =
+    [ \n\t]
+
+whitespace =
+    whitespace_char+
+
+whitespace_opt =
+    whitespace
+  / ""
+
 // It is stupid to require exactly 1 space between pitch and duration, but I
 // want some separator between those and space looks like the easiest separator
 // to print.
@@ -23,3 +33,15 @@ note =
 rest =
     "_" duration_separator duration:integer
         { return {tag:"rest", dur:duration}; }
+
+sequence =
+    left:note whitespace_opt ";" whitespace_opt right:sequence
+        { return {tag:"seq", left:left, right:right}; }
+  / left:note whitespace_opt ";" whitespace_opt right:note
+        { return {tag:"seq", left:left, right:right}; }
+
+parallel =
+    left:note whitespace_opt "," whitespace_opt right:parallel
+        { return {tag:"par", left:left, right:right}; }
+  / left:note whitespace_opt "," whitespace_opt right:note
+        { return {tag:"par", left:left, right:right}; }

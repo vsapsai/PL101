@@ -1,0 +1,6 @@
+TOP = $(dir $(lastword $(MAKEFILE_LIST)))
+
+NODE = /usr/local/bin/node
+MOCHA = $(TOP)/node_modules/mocha/bin/mocha
+
+MOCHA_FLAGS = --ui tdd --reporter list

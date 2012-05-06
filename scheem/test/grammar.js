@@ -16,15 +16,26 @@ suite('expression', function() {
     test('atom', function() {
         assert.equal( parse("atom"), "atom" );
     });
+    test('integer number', function() {
+        assert.deepEqual( parse("13"), 13 );
+        assert.deepEqual( parse("012"), 12 ); // octal numbers aren't supported
+    });
+    test('atom with digits', function() {
+        assert.deepEqual( parse("y2"), "y2" );
+        assert.throws(function() {
+            // hexadecimal numbers aren't supported
+            parse("0x0BAD1DEA");
+        });
+    });
     test('atom with special symbols', function() {
         assert.equal( parse("+"), "+" );
     });
     test('list', function() {
-        assert.deepEqual( parse("(+ x 3)"), ["+", "x", "3"] );
+        assert.deepEqual( parse("(+ x 3)"), ["+", "x", 3] );
     });
     test('nested list', function() {
         assert.deepEqual( parse("(+ 1 (f x 3 y))"),
-            ["+", "1", ["f", "x", "3", "y"]] );
+            ["+", 1, ["f", "x", 3, "y"]] );
     });
     test('single atom in parentheses', function() {
         assert.deepEqual( parse("(x)"), ["x"] );

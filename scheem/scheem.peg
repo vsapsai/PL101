@@ -1,15 +1,27 @@
 start =
     expression
 
+digit =
+    [0-9]
+
+alphachar =
+    [a-zA-Z_?!+\-=@#$%^&*/.]
+
 validchar =
-    [0-9a-zA-Z_?!+\-=@#$%^&*/.]
+    digit
+  / alphachar
 
 quote_char =
     "'"
 
+integer_number =
+    digits:digit+
+        { return parseInt(digits.join(""), 10); }
+
 atom =
-    chars:validchar+
-        { return chars.join(""); }
+    integer_number
+  / char:alphachar chars:validchar*
+        { return [char].concat(chars).join(""); }
 
 whitespace_char =
     [ \n\t]

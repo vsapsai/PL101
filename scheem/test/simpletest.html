@@ -124,7 +124,7 @@ var evalScheem = function (expr, env) {
 };
 
 // Some unit tests
-
+suite('evalScheem', function() {
 suite('arithmetic', function() {
 	test('number', function() {
 		assert.deepEqual(
@@ -470,11 +470,13 @@ suite('conditionals', function() {
 		});
 	});
 });
+});
 
 // Parser unit tests
 var parse = SCHEEM.parse;
 
 // Do tests
+suite('Grammar', function() {
 suite('expression', function() {
     test('empty', function() {
         assert.throws(function() {
@@ -588,6 +590,7 @@ suite('comments', function() {
     test('comment with valid code', function() {
         assert.deepEqual( parse("(a;;b)\nc)"), ["a", "c"] );
     });
+});
 });
 
   </script>

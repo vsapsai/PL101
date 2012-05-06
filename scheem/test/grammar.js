@@ -19,13 +19,15 @@ suite('expression', function() {
     test('integer number', function() {
         assert.deepEqual( parse("13"), 13 );
         assert.deepEqual( parse("012"), 12 ); // octal numbers aren't supported
+        assert.deepEqual( parse("-7"), -7 );
     });
     test('atom with digits', function() {
         assert.deepEqual( parse("y2"), "y2" );
         assert.throws(function() {
-            // hexadecimal numbers aren't supported
+            // hexadecimal numbers aren't supported, identifiers cannot start with digit
             parse("0x0BAD1DEA");
         });
+        assert.deepEqual( parse("-none-"), "-none-" );
     });
     test('atom with special symbols', function() {
         assert.equal( parse("+"), "+" );

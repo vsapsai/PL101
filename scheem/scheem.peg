@@ -15,7 +15,9 @@ quote_char =
     "'"
 
 integer_number =
-    digits:digit+
+    [-] digits:digit+
+        { return -parseInt(digits.join(""), 10); }
+  / digits:digit+
         { return parseInt(digits.join(""), 10); }
 
 atom =

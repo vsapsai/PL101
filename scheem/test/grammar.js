@@ -13,6 +13,11 @@ var parse = PEG.buildParser(data).parse;
 
 // Do tests
 suite('expression', function() {
+    test('empty', function() {
+        assert.throws(function() {
+            parse("");
+        });
+    });
     test('atom', function() {
         assert.equal( parse("atom"), "atom" );
     });
@@ -64,7 +69,6 @@ suite('expression', function() {
         assert.deepEqual( parse("((x))"), [["x"]] );
     });
 });
-// assert.equal( parse(""), undefined);
 
 suite('whitespace', function() {
     test('2 spaces in atom list', function() {

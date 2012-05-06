@@ -37,11 +37,17 @@ integer_number =
         { return -number; }
   / positive_integer_number
 
-atom =
+number =
     float_number
   / integer_number
-  / char:alphachar chars:validchar*
+
+identifier =
+    char:alphachar chars:validchar*
         { return [char].concat(chars).join(""); }
+
+atom =
+    number
+  / identifier
 
 whitespace_char =
     [ \n\t]

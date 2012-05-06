@@ -20,6 +20,8 @@ suite('expression', function() {
         assert.deepEqual( parse("13"), 13 );
         assert.deepEqual( parse("012"), 12 ); // octal numbers aren't supported
         assert.deepEqual( parse("-7"), -7 );
+        assert.deepEqual( parse("0"), 0 );
+        assert.deepEqual( parse("-0"), 0 );
     });
     test('atom with digits', function() {
         assert.deepEqual( parse("y2"), "y2" );

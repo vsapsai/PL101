@@ -14,14 +14,32 @@ validchar =
 quote_char =
     "'"
 
-integer_number =
-    [-] digits:digit+
-        { return -parseInt(digits.join(""), 10); }
-  / digits:digit+
+positive_float_number =
+    int_part:digit+ [.] frac_part:digit+
+        { return parseFloat(int_part.concat(["."].concat(frac_part)).join("")); }
+  / int_part:digit+ [.]
+        { return parseFloat(int_part.concat(["."]).join("")); }
+  / [.] frac_part:digit+
+        { return parseFloat(["."].concat(frac_part).join("")); }
+
+float_number =
+    [-] number:positive_float_number
+        { return -number; }
+  / positive_float_number
+
+
+positive_integer_number =
+    digits:digit+
         { return parseInt(digits.join(""), 10); }
 
+integer_number =
+    [-] number:positive_integer_number
+        { return -number; }
+  / positive_integer_number
+
 atom =
-    integer_number
+    float_number
+  / integer_number
   / char:alphachar chars:validchar*
         { return [char].concat(chars).join(""); }
 

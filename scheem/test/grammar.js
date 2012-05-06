@@ -23,13 +23,29 @@ suite('expression', function() {
         assert.deepEqual( parse("0"), 0 );
         assert.deepEqual( parse("-0"), 0 );
     });
-    test('atom with digits', function() {
+    test('float number', function() {
+        assert.deepEqual( parse("4.2"), 4.2 );
+        assert.deepEqual( parse("4."), 4.0 );
+        assert.deepEqual( parse(".2"), 0.2 );
+        assert.deepEqual( parse("-4.2"), -4.2 );
+        assert.deepEqual( parse("-4."), -4.0 );
+        assert.deepEqual( parse("-.2"), -0.2 );
+        assert.deepEqual( parse("0.0"), 0.0 );
+        assert.deepEqual( parse("0."), 0.0 );
+        assert.deepEqual( parse(".0"), 0.0 );
+        assert.deepEqual( parse("-0.0"), 0.0 );
+        assert.deepEqual( parse("-0."), 0.0 );
+        assert.deepEqual( parse("-.0"), 0.0 );
+        // Scientific notation isn't supported
+    });
+    test('atom with digits and symbols special for numbers', function() {
         assert.deepEqual( parse("y2"), "y2" );
         assert.throws(function() {
             // hexadecimal numbers aren't supported, identifiers cannot start with digit
             parse("0x0BAD1DEA");
         });
         assert.deepEqual( parse("-none-"), "-none-" );
+        assert.deepEqual( parse(".dots"), ".dots" );
     });
     test('atom with special symbols', function() {
         assert.equal( parse("+"), "+" );

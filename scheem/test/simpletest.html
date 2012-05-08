@@ -593,6 +593,21 @@ suite('comments', function() {
 });
 });
 
+var evalScheemString = function(code, env) {
+	return evalScheem(SCHEEM.parse(code), env);
+};
+
+suite('evalScheemString', function() {
+suite('simple', function() {
+	test('complex expression', function() {
+		assert.deepEqual(
+			evalScheemString('( + x (*    2 y)) ', {x:7, y:3}),
+			13
+		);
+	});
+});
+});
+
   </script>
   <script>
     $(function(){

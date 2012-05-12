@@ -1,6 +1,15 @@
-var assert = require('chai').assert;
-var evalScheem = require('../scheem').evalScheem;
+if (typeof module !== 'undefined') {
+    var assert = require('chai').assert;
+    var evalScheem = require('../scheem').evalScheem;
+} else {
+    // Loaded in browser.
+    if (typeof assert === 'undefined')
+    {
+        var assert = chai.assert;
+    }
+}
 
+suite('evalScheem', function() {
 suite('arithmetic', function() {
 	test('number', function() {
 		assert.deepEqual(
@@ -345,4 +354,5 @@ suite('conditionals', function() {
 			evalScheem(['if', 1, 2, 3], {});
 		});
 	});
+});
 });

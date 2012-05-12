@@ -1,17 +1,27 @@
-var PEG = require('pegjs');
-var assert = require('chai').assert;
-var fs = require('fs'); // for loading files
+if (typeof module !== 'undefined') {
+    var PEG = require('pegjs');
+    var assert = require('chai').assert;
+    var fs = require('fs'); // for loading files
 
-// Read file contents
-var data = fs.readFileSync('scheem.peg', 'utf-8');
+    // Read file contents
+    var data = fs.readFileSync('scheem.peg', 'utf-8');
 
-// Show the PEG grammar file
-//console.log(data);
+    // Show the PEG grammar file
+    //console.log(data);
 
-// Create my parser
-var parse = PEG.buildParser(data).parse;
+    // Create parser
+    var parse = PEG.buildParser(data).parse;
+} else {
+    // Loaded in browser.
+    if (typeof assert === 'undefined')
+    {
+        var assert = chai.assert;
+    }
+    var parse = SCHEEM.parse;
+}
 
 // Do tests
+suite('Grammar', function() {
 suite('expression', function() {
     test('empty', function() {
         assert.throws(function() {
@@ -125,4 +135,5 @@ suite('comments', function() {
     test('comment with valid code', function() {
         assert.deepEqual( parse("(a;;b)\nc)"), ["a", "c"] );
     });
+});
 });

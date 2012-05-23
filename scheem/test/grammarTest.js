@@ -88,7 +88,10 @@ suite('whitespace', function() {
         assert.deepEqual( parse("(ab)"), ["ab"] );
     });
     test('spaces around parentheses', function() {
-        assert.deepEqual( parse(" ( a b  )"), ["a", "b"] );
+        assert.deepEqual( parse(" ( a b  ) "), ["a", "b"] );
+    });
+    test('space not after the last closing parenthesis', function() {
+        assert.deepEqual( parse("(a (b c) d)"), ["a", ["b", "c"], "d"] );
     });
     test('tabs', function() {
         assert.deepEqual( parse("(a\tb)"), ["a", "b"] );
@@ -116,8 +119,10 @@ suite('quote', function() {
         assert.deepEqual( parse(" ''x"), ["quote", ["quote", "x"]] );
     });
     test('with space', function() {
-        // don't like space between ' and (, but not gonna fight with it
-        assert.deepEqual( parse("' (a b)"), ["quote", ["a", "b"]] );
+        // don't like space between ' and (
+        assert.throws(function() {
+            parse("' (a b)");
+        });
     });
 });
 

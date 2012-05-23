@@ -1,5 +1,6 @@
 start =
-    expression
+    whitespace_opt expr:expression whitespace_opt
+        { return expr; }
 
 digit =
     [0-9]
@@ -74,7 +75,7 @@ expression_list =
 expression =
     single:atom
         { return single; }
-  / whitespace_opt "(" whitespace_opt multiple:expression_list whitespace_opt ")" whitespace_opt
+  / "(" whitespace_opt multiple:expression_list whitespace_opt ")"
         { return multiple; }
   / whitespace_opt quote_char quoted_expression:expression
         { return ["quote", quoted_expression]; }

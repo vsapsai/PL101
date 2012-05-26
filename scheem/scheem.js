@@ -96,13 +96,22 @@ var evalScheem = function (expr, env) {
 			} else {
 				check(false, "Encountered not a boolean in boolean 'if' context");
 			}
-            return result;			
+            return result;
+        default:
+            var evaluatedArguments = expr.slice(1).map(function (arg) { return evalScheem(arg, env); });
+            var builtinFunctions = {'sum_one': sum_one,
+            						'double_arg': double_arg,
+            						'sum_two': sum_two,
+            						'sum_three': sum_three,
+            						'sum_all': sum_all};
+			var func = builtinFunctions[expr[0]];
+			return func.apply(null, evaluatedArguments);
     }
 };
 
 var isTerminalEnvironment = function(env) {
 	return !env.hasOwnProperty('bindings');
-}
+};
 
 var lookup = function (env, v) {
 	check(!isTerminalEnvironment(env), v + " not found");
@@ -128,6 +137,31 @@ var addBinding = function (env, v, val) {
 	}
 	check(!(v in env.bindings), "Cannot redefine variable " + v);
     env.bindings[v] = val;
+};
+
+// These are test functions to test function application.
+var sum_one = function (x) {
+	return x;
+};
+
+var sum_two = function (x, y) {
+	return x + y;
+};
+
+var sum_three = function (x, y, z) {
+	return x + y + z;
+};
+
+var sum_all = function (numbers) {
+	var result = 0;
+	for (var i = 0; i < arguments.length; i++) {
+		result += arguments[i];
+	}
+	return result;
+};
+
+var double_arg = function (x) {
+	return 2 * x;
 };
 
 // If we are used as Node module, export evalScheem

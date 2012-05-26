@@ -9,6 +9,16 @@ if (typeof module !== 'undefined') {
     }
 }
 
+// Utility function for testing which simplifies creating nested environments.
+// Bindings go from innermost to outermost.
+var makeEnvironment = function(bindings) {
+	var result = {};
+	for (var i = arguments.length - 1; i >= 0; i--) {
+		result = {'bindings': arguments[i], 'outer': result};
+	}
+	return result;
+};
+
 suite('evalScheem', function() {
 suite('arithmetic', function() {
 	test('number', function() {
@@ -75,16 +85,33 @@ suite('arithmetic', function() {
 	});
 });
 suite('variables', function() {
-	var env = {x:2, y:3, z:10};
+	var env = makeEnvironment({x:2, y:3, z:10});
 	test('single variable', function() {
 		assert.deepEqual(
 			evalScheem('x', env),
 			2
 		);
 	});
+	test('variable in outer environment', function() {
+		assert.deepEqual(
+			evalScheem('x', makeEnvironment({y: 2}, {x: 5})),
+			5
+		);
+	});
+	test('shadowing variable', function() {
+		assert.deepEqual(
+			evalScheem('x', makeEnvironment({x: 10}, {x: 5})),
+			10
+		);
+	});
 	test('unknown variable error', function() {
 		assert.throws(function() {
 			evalScheem('x', {});
+		});
+	});
+	test('unknown variable in multiple environments error', function() {
+		assert.throws(function() {
+			evalScheem('x', makeEnvironment({y: 2}, {z: 3}, {a: 8, b: 9}));
 		});
 	});
 	test('arithmetic with variable', function() {
@@ -102,7 +129,12 @@ suite('variables', function() {
 	test('define variable', function() {
 		var mutableEnv = {};
 		evalScheem(['define', 'a', 5], mutableEnv);
-		assert.deepEqual(mutableEnv, {a:5});
+		assert.deepEqual(mutableEnv, makeEnvironment({a:5}));
+	});
+	test('define variable not in empty environment', function() {
+		var mutableEnv = makeEnvironment({x:2});
+		evalScheem(['define', 'a', 5], mutableEnv);
+		assert.deepEqual(mutableEnv, makeEnvironment({x:2, a:5}));
 	});
 	test('incorrect arguments to define error', function() {
 		assert.throws(function() {
@@ -119,14 +151,27 @@ suite('variables', function() {
 	});
 	test('redefine variable error', function() {
 		assert.throws(function() {
-			evalScheem(['define', 'a', 5], {a:3});
+			evalScheem(['define', 'a', 5], makeEnvironment({a:3}));
+		});
+	});
+	test('define variable not at top level error', function() {
+		//vsapsai: I am not sure if I should skip all bindings and put 'define'
+		// into the outermost scope, so just decided to treat it as error if
+		// user calls 'define' in nested scope.
+		assert.throws(function() {
+			evalScheem(['define', 'a', 5], makeEnvironment({x:2}, {y:3}));
 		});
 	});
 	test('set variable', function() {
-		var mutableEnv = {a:5};
+		var mutableEnv = makeEnvironment({a:5});
 		evalScheem(['set!', 'a', 1], mutableEnv);
-		assert.deepEqual(mutableEnv, {a:1});
+		assert.deepEqual(mutableEnv, makeEnvironment({a:1}));
 	});
+	test('set variable in proper scope', function() {
+		var mutableEnv = makeEnvironment({x:2}, {a:5});
+		evalScheem(['set!', 'a', 1], mutableEnv);
+		assert.deepEqual(mutableEnv, makeEnvironment({x:2}, {a:1}));
+	})
 	test('incorrect arguments to set! error', function() {
 		assert.throws(function() {
 			evalScheem(['set!', 'a'], {a:2});
@@ -141,9 +186,9 @@ suite('variables', function() {
 		});
 	});
 	test('set variable to arithmetic expression', function() {
-		var mutableEnv = {x:7, y:3, a:2};
+		var mutableEnv = makeEnvironment({x:7, y:3, a:2});
 		evalScheem(['set!', 'y', ['+', 'x', 1]], mutableEnv);
-		assert.deepEqual(mutableEnv, {x:7, y:8, a:2});
+		assert.deepEqual(mutableEnv, makeEnvironment({x:7, y:8, a:2}));
 	});
 });
 suite('quote', function() {
@@ -186,7 +231,7 @@ suite('begin', function() {
 	});
 	test('with variables', function() {
 		assert.deepEqual(
-			evalScheem(['begin', 'x', 'y', 'x'], {x:1, y:2}),
+			evalScheem(['begin', 'x', 'y', 'x'], makeEnvironment({x:1, y:2})),
 			1
 		);
 	});
@@ -195,7 +240,7 @@ suite('begin', function() {
 			evalScheem(['begin',
 						['set!', 'x', 5],
 						['set!', 'x', ['+', 'y', 'x']],
-						'x'], {x:1, y:2}),
+						'x'], makeEnvironment({x:1, y:2})),
 			7
 		);
 	});
@@ -274,7 +319,7 @@ suite('list operators', function() {
 			[1, 2]
 		);
 		assert.deepEqual(
-			evalScheem(['car', 'x'], {x:[4, 2]}),
+			evalScheem(['car', 'x'], makeEnvironment({x:[4, 2]})),
 			4
 		);
 	});
@@ -300,7 +345,7 @@ suite('list operators', function() {
 			evalScheem(['car', 2], {});
 		});
 		assert.throws(function() {
-			evalScheem(['cdr', 'x'], {x:7});
+			evalScheem(['cdr', 'x'], makeEnvironment({x:7}));
 		});
 	});
 	test('car empty list error', function() {

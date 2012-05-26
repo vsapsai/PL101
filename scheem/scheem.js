@@ -16,19 +16,6 @@ var evalScheem = function (expr, env) {
 	}
     // Look at head of list for operation
     switch (expr[0]) {
-        case '+':
-			check(expr.length >= 3, "Not enough arguments to '+'");
-            return evalScheem(expr[1], env) + evalScheem(expr[2], env);
-		case '-':
-			check(expr.length >= 3, "Not enough arguments to '-'");
-			return evalScheem(expr[1], env) - evalScheem(expr[2], env);
-        case '*':
-			check(expr.length >= 3, "Not enough arguments to '*'");
-            return evalScheem(expr[1], env) * evalScheem(expr[2], env);
-		case '/':
-			check(expr.length === 3, "Incorrect arguments to '/'");
-			return evalScheem(expr[1], env) / evalScheem(expr[2], env);
-
         case 'quote':
 			check(expr.length === 2, "Too many arguments to quote. Expect 1");
             return expr[1];
@@ -53,37 +40,6 @@ var evalScheem = function (expr, env) {
                 result = evalScheem(expr[i], env);
             }
             return result;
-
-		case '=':
-			check(expr.length === 3, "Incorrect arguments to '='. Expect 2");
-            var eq = (evalScheem(expr[1], env) === evalScheem(expr[2], env));
-            if (eq) return '#t';
-            return '#f';
-		case '<':
-			check(expr.length === 3, "Incorrect arguments to '<'. Expect 2");
-            var less = (evalScheem(expr[1], env) < evalScheem(expr[2], env));
-            if (less) return '#t';
-            return '#f';
-
-		case 'cons':
-			check(expr.length === 3, "Incorrect arguments to 'cons'. Expect 2");
-            var head = evalScheem(expr[1], env);
-            var rest = evalScheem(expr[2], env);
-            return [head].concat(rest);
-        case 'car':
-			check(expr.length === 2, "Incorrect arguments to 'car'. Expect 1");
-			var argument = evalScheem(expr[1], env);
-			check((typeof argument != 'number') && (typeof argument != 'string'),
-				"Can 'car' only a list");
-			check(argument.length > 0, "Can 'car' only non-empty list");
-			return argument[0];
-        case 'cdr':
-			check(expr.length === 2, "Incorrect arguments to 'cdr'. Expect 1");
-            var result = evalScheem(expr[1], env);
-			check((typeof result != 'number') && (typeof result != 'string'),
-				"Can 'cdr' only a list");
-            result.shift();
-            return result;			
 
 		case 'if':
 			check(expr.length === 4, "Incorrect arguments to 'if'. Expect 3");
@@ -115,12 +71,81 @@ var evalScheem = function (expr, env) {
     }
 };
 
-var isTerminalEnvironment = function(env) {
+// Built-in functions.
+var add = function (x, y) {
+	check(arguments.length >= 2, "Not enough arguments to '+'");
+	return x + y;
+};
+var subtract = function (x, y) {
+	check(arguments.length >= 2, "Not enough arguments to '-'");
+	return x - y;
+};
+var multiply = function (x, y) {
+	check(arguments.length >= 2, "Not enough arguments to '*'");
+	return x * y;
+};
+var divide = function (x, y) {
+	check(arguments.length === 2, "Incorrect arguments to '/'");
+	return x / y;
+};
+
+var booleanRepresentation = function (x) {
+	check(typeof x === 'boolean', "Trying to use not boolean in boolean context")
+	if (x) return '#t';
+	return '#f';
+};
+var equalPredicate = function (x, y) {
+	check(arguments.length === 2, "Incorrect arguments to '='. Expect 2");
+	return booleanRepresentation(x === y);
+};
+var lessPredicate = function (x, y) {
+	check(arguments.length === 2, "Incorrect arguments to '<'. Expect 2");
+	return booleanRepresentation(x < y);
+};		
+
+var cons = function (head, rest) {
+	check(arguments.length === 2, "Incorrect arguments to 'cons'. Expect 2");
+	return [head].concat(rest);
+};
+var car = function (list) {
+	check(arguments.length === 1, "Incorrect arguments to 'car'. Expect 1");
+	check((typeof list != 'number') && (typeof list != 'string'), "Can 'car' only a list");
+	check(list.length > 0, "Can 'car' only non-empty list");
+	return list[0];
+};
+var cdr = function (list) {
+	check(arguments.length === 1, "Incorrect arguments to 'car'. Expect 1");
+	check((typeof list != 'number') && (typeof list != 'string'), "Can 'cdr' only a list");
+	return list.slice(1);
+};
+
+var builtinFunctions = {
+	'+': add,
+	'-': subtract,
+	'*': multiply,
+	'/': divide,
+
+	'=': equalPredicate,
+	'<': lessPredicate,
+
+	'cons': cons,
+	'car': car,
+	'cdr': cdr
+}
+
+// Environment-related functions.
+var isTerminalEnvironment = function (env) {
 	return !env.hasOwnProperty('bindings');
 };
 
+var builtinLookup = function (v) {
+	check(builtinFunctions.hasOwnProperty(v), v + " not found");
+	return builtinFunctions[v];
+};
 var lookup = function (env, v) {
-	check(!isTerminalEnvironment(env), v + " not found");
+	if (isTerminalEnvironment(env)) {
+		return builtinLookup(v);
+	}
     if (env.bindings.hasOwnProperty(v)) {
         return env.bindings[v];
     }

@@ -101,9 +101,19 @@ var evalScheem = function (expr, env) {
         case 'lambda-one':
         	return function(argument) {
                 var environment = {'bindings': {}, 'outer': env};
-                environment.bindings[expr[1]] = argument;
+                addBinding(environment, expr[1], argument);
                 return evalScheem(expr[2], environment);
             };
+        case 'lambda':
+        	return function(args) {
+        		var environment = {'bindings': {}, 'outer': env};
+        		var variables = expr[1];
+        		check(arguments.length === variables.length, "Arguments count mismatch");
+        		for (var i = 0; i < variables.length; i++) {
+        			addBinding(environment, variables[i], arguments[i]);
+        		}
+        		return evalScheem(expr[2], environment);
+        	};
         default:
         	var func = evalScheem(expr[0], env);
             var evaluatedArguments = expr.slice(1).map(function (arg) { return evalScheem(arg, env); });

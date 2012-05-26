@@ -435,9 +435,21 @@ suite('functions', function() {
     		5
     	);
     });
+    test('apply lambda', function() {
+    	assert.deepEqual(
+    		evalScheem([['lambda', ['x'], 'x'], 5], {}),
+    		5
+    	);
+    })
 	test('apply lambda-one with non-trivial body', function() {
 		assert.deepEqual(
 			evalScheem([['lambda-one', 'x', ['+', 'x', 1]], 5], {}),
+			6
+		);
+	});
+	test('apply lambda with non-trivial body', function() {
+		assert.deepEqual(
+			evalScheem([['lambda', ['x'], ['+', 'x', 1]], 5], {}),
 			6
 		);
 	});
@@ -450,10 +462,28 @@ suite('functions', function() {
 			8
 		);
 	});
+	test('nested lambda', function() {
+		assert.deepEqual(
+			evalScheem([[['lambda', ['x'],
+							['lambda', ['y'],
+								['+', 'x', 'y']]],
+						5], 3], {}),
+			8
+		);
+	});
 	test('nested lambda-one with same argument name', function() {
 		assert.deepEqual(
 			evalScheem([[['lambda-one', 'x',
 							['lambda-one', 'x',
+								['+', 'x', 'x']]],
+						5], 3], {}),
+			6
+		);
+	});
+	test('nested lambda with same argument name', function() {
+		assert.deepEqual(
+			evalScheem([[['lambda', ['x'],
+							['lambda', ['x'],
 								['+', 'x', 'x']]],
 						5], 3], {}),
 			6

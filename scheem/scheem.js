@@ -97,14 +97,22 @@ var evalScheem = function (expr, env) {
 				check(false, "Encountered not a boolean in boolean 'if' context");
 			}
             return result;
+
+        case 'lambda-one':
+        	return function(argument) {
+                var environment = {'bindings': {}, 'outer': env};
+                environment.bindings[expr[1]] = argument;
+                return evalScheem(expr[2], environment);
+            };
         default:
+        	var func = evalScheem(expr[0], env);
             var evaluatedArguments = expr.slice(1).map(function (arg) { return evalScheem(arg, env); });
             var builtinFunctions = {'sum_one': sum_one,
             						'double_arg': double_arg,
             						'sum_two': sum_two,
             						'sum_three': sum_three,
             						'sum_all': sum_all};
-			var func = builtinFunctions[expr[0]];
+			//var func = builtinFunctions[expr[0]];
 			return func.apply(null, evaluatedArguments);
     }
 };

@@ -401,7 +401,7 @@ suite('conditionals', function() {
 	});
 });
 suite('functions', function() {
-	test('with single argument', function() {
+	/*test('with single argument', function() {
 		assert.deepEqual(
 			evalScheem(['sum_one', 5], {}),
 			5
@@ -427,6 +427,36 @@ suite('functions', function() {
 		assert.deepEqual(
 			evalScheem(['sum_all', 2, 3, 7, 6, 13], {}),
 			31
+		);
+	});*/
+    test('apply lambda-one', function() {
+    	assert.deepEqual(
+    		evalScheem([['lambda-one', 'x', 'x'], 5], {}),
+    		5
+    	);
+    });
+	test('apply lambda-one with non-trivial body', function() {
+		assert.deepEqual(
+			evalScheem([['lambda-one', 'x', ['+', 'x', 1]], 5], {}),
+			6
+		);
+	});
+	test('nested lambda-one', function() {
+		assert.deepEqual(
+			evalScheem([[['lambda-one', 'x',
+							['lambda-one', 'y',
+								['+', 'x', 'y']]],
+						5], 3], {}),
+			8
+		);
+	});
+	test('nested lambda-one with same argument name', function() {
+		assert.deepEqual(
+			evalScheem([[['lambda-one', 'x',
+							['lambda-one', 'x',
+								['+', 'x', 'x']]],
+						5], 3], {}),
+			6
 		);
 	});
 });

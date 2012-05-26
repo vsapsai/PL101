@@ -401,19 +401,19 @@ suite('conditionals', function() {
 	});
 });
 suite('functions', function() {
-    test('apply lambda', function() {
+    test('anonymous function', function() {
     	assert.deepEqual(
     		evalScheem([['lambda', ['x'], 'x'], 5], {}),
     		5
     	);
     });
-	test('apply lambda with non-trivial body', function() {
+	test('anonymous function with non-trivial body', function() {
 		assert.deepEqual(
 			evalScheem([['lambda', ['x'], ['+', 'x', 1]], 5], {}),
 			6
 		);
 	});
-	test('nested lambda', function() {
+	test('currying anonymous functions', function() {
 		assert.deepEqual(
 			evalScheem([[['lambda', ['x'],
 							['lambda', ['y'],
@@ -422,13 +422,27 @@ suite('functions', function() {
 			8
 		);
 	});
-	test('nested lambda with same argument name', function() {
+	test('nested anonymous functions with same argument name', function() {
 		assert.deepEqual(
 			evalScheem([[['lambda', ['x'],
 							['lambda', ['x'],
 								['+', 'x', 'x']]],
 						5], 3], {}),
 			6
+		);
+	});
+	test('define function', function() {
+		var env = {};
+		evalScheem(['define', 'id', ['lambda', ['x'], 'x']], env);
+		assert.deepEqual(typeof(env.bindings.id), 'function');
+	});
+	test('call defined function', function() {
+		var env = {};
+		assert.deepEqual(
+			evalScheem(['begin',
+							['define', 'id', ['lambda', ['x'], 'x']],
+							['id', 7]], env),
+			7
 		);
 	});
 });

@@ -401,65 +401,16 @@ suite('conditionals', function() {
 	});
 });
 suite('functions', function() {
-	/*test('with single argument', function() {
-		assert.deepEqual(
-			evalScheem(['sum_one', 5], {}),
-			5
-		);
-		assert.deepEqual(
-			evalScheem(['double_arg', 5], {}),
-			10
-		);
-		assert.deepEqual(
-			evalScheem(['sum_one', 'x'], makeEnvironment({x:3})),
-			3
-		);
-	});
-	test('various arguments count', function() {
-		assert.deepEqual(
-			evalScheem(['sum_two', 2, 3], {}),
-			5
-		);
-		assert.deepEqual(
-			evalScheem(['sum_three', 2, 3, 7], {}),
-			12
-		);
-		assert.deepEqual(
-			evalScheem(['sum_all', 2, 3, 7, 6, 13], {}),
-			31
-		);
-	});*/
-    test('apply lambda-one', function() {
-    	assert.deepEqual(
-    		evalScheem([['lambda-one', 'x', 'x'], 5], {}),
-    		5
-    	);
-    });
     test('apply lambda', function() {
     	assert.deepEqual(
     		evalScheem([['lambda', ['x'], 'x'], 5], {}),
     		5
     	);
-    })
-	test('apply lambda-one with non-trivial body', function() {
-		assert.deepEqual(
-			evalScheem([['lambda-one', 'x', ['+', 'x', 1]], 5], {}),
-			6
-		);
-	});
+    });
 	test('apply lambda with non-trivial body', function() {
 		assert.deepEqual(
 			evalScheem([['lambda', ['x'], ['+', 'x', 1]], 5], {}),
 			6
-		);
-	});
-	test('nested lambda-one', function() {
-		assert.deepEqual(
-			evalScheem([[['lambda-one', 'x',
-							['lambda-one', 'y',
-								['+', 'x', 'y']]],
-						5], 3], {}),
-			8
 		);
 	});
 	test('nested lambda', function() {
@@ -469,15 +420,6 @@ suite('functions', function() {
 								['+', 'x', 'y']]],
 						5], 3], {}),
 			8
-		);
-	});
-	test('nested lambda-one with same argument name', function() {
-		assert.deepEqual(
-			evalScheem([[['lambda-one', 'x',
-							['lambda-one', 'x',
-								['+', 'x', 'x']]],
-						5], 3], {}),
-			6
 		);
 	});
 	test('nested lambda with same argument name', function() {

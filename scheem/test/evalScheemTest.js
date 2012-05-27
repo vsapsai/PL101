@@ -431,6 +431,18 @@ suite('functions', function() {
 			6
 		);
 	});
+	test('evaluating function arguments has side effects', function() {
+		var env = makeEnvironment({x:1});
+		assert.deepEqual(
+			evalScheem(['+',
+						['begin',
+							['set!', 'x', 2],
+							5],
+						'x'], env),
+			7
+		);
+		assert.deepEqual(env, makeEnvironment({x:2}));
+	});
 	test('define function', function() {
 		var env = {};
 		evalScheem(['define', 'id', ['lambda', ['x'], 'x']], env);
@@ -480,6 +492,15 @@ suite('functions', function() {
 							['factorial', 4]
 						], {}),
 			24
+		);
+	});
+	test('override built-in function', function() {
+		assert.deepEqual(
+			evalScheem(['begin',
+							['define', '+', ['lambda', ['x', 'y'], ['-', 'x', 'y']]],
+							['+', 5, 3]
+						], {}),
+			2
 		);
 	});
 	test('incorrect lambda arguments count error', function() {

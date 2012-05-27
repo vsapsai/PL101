@@ -445,5 +445,42 @@ suite('functions', function() {
 			7
 		);
 	});
+	test('function argument shadows global variable', function() {
+		var env = makeEnvironment({x:2});
+		assert.deepEqual(
+			evalScheem([['lambda', ['x'], ['+', 'x', 1]], 10], makeEnvironment({x:2})),
+			11
+		);
+	});
+	test('pass function as argument to function', function() {
+		assert.deepEqual(
+			evalScheem([['lambda', ['func'], ['func', 0]],
+							['lambda', ['x'], ['+', 'x', 1]]], {}),
+			1
+		);
+	});
+	test('null-argument function', function() {
+		assert.deepEqual(
+			evalScheem([['lambda', [], 0]], {}),
+			0
+		);
+	});
+	test('function modifies global variable', function() {
+		var env = makeEnvironment({x:2});
+		evalScheem([['lambda', [], ['set!', 'x', 42]]], env);
+		assert.deepEqual(env, makeEnvironment({x:42}));
+	});
+	test('recurrent function', function() {
+		assert.deepEqual(
+			evalScheem(['begin',
+							['define', 'factorial', ['lambda', ['x'],
+								['if', ['=', 'x', 0],
+									1,
+									['*', 'x', ['factorial', ['-', 'x', 1]]]]]],
+							['factorial', 4]
+						], {}),
+			24
+		);
+	});
 });
 });

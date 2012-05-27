@@ -39,6 +39,28 @@ Output:
 <h1>About</h1>
 This is a live Scheem interpreter demo.
 
+<h1>Examples</h1>
+<h2>Recursive factorial</h2>
+<pre>
+(begin 
+  (define factorial (lambda (x)
+    (if (= x 0)
+      1
+      (* x (factorial (- x 1))))))
+  (factorial 3)
+)
+</pre>
+
+<h2>Function which returns function</h2>
+<pre>
+(begin
+  (define make-incrementer (lambda (inc)
+    (lambda (x) (+ x inc))))
+  (define increment5 (make-incrementer 5))
+  (increment5 3)
+)
+</pre>
+
 <script>
   // Utility function to log messages
   var log_console = function(msg) {

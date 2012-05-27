@@ -55,9 +55,14 @@ var evalScheem = function (expr, env) {
             return result;
 
         case 'lambda':
+        	check(expr.length === 3, "Incorrect arguments to 'lambda'. Expect 2");
+        	var variables = expr[1];
+        	check((typeof variables != 'number') && (typeof variables != 'string'), "First 'lambda' argument must be a variables list");
+        	variables.forEach(function(element, index, array) {
+        		check(typeof element === 'string', "'lambda' arguments list must contain only variables");
+        	});
         	return function(args) {
         		var environment = {'bindings': {}, 'outer': env};
-        		var variables = expr[1];
         		check(arguments.length === variables.length, "Arguments count mismatch");
         		for (var i = 0; i < variables.length; i++) {
         			addBinding(environment, variables[i], arguments[i]);

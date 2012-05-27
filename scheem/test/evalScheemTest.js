@@ -470,7 +470,7 @@ suite('functions', function() {
 		evalScheem([['lambda', [], ['set!', 'x', 42]]], env);
 		assert.deepEqual(env, makeEnvironment({x:42}));
 	});
-	test('recurrent function', function() {
+	test('recursive function', function() {
 		assert.deepEqual(
 			evalScheem(['begin',
 							['define', 'factorial', ['lambda', ['x'],
@@ -481,6 +481,31 @@ suite('functions', function() {
 						], {}),
 			24
 		);
+	});
+	test('incorrect lambda arguments count error', function() {
+		assert.throws(function() {
+			evalScheem(['lambda', ['x']], {});
+		});
+	});
+	test('lambda arguments not in a list error', function() {
+		assert.throws(function() {
+			evalScheem(['lambda', 'x', ['+', 'x', 1]], {});
+		});
+	});
+	test('lambda argument not a variable error', function() {
+		assert.throws(function() {
+			evalScheem(['lambda', [3], 3], {});
+		});
+	});
+	test('duplicate lambda arguments names error', function() {
+		assert.throws(function() {
+			evalScheem([['lambda', ['x', 'y', 'x'], ['+', 'x', 'y']], 1, 2, 1], {});
+		});
+	});
+	test('function arguments count mismatch error', function() {
+		assert.throws(function() {
+			evalScheem([['lambda', ['x'], 'x'], 2, 3], {});
+		});
 	});
 });
 });

@@ -32,7 +32,7 @@ suite('evalScheemString', function() {
 suite('simple', function() {
 	test('complex expression', function() {
 		assert.deepEqual(
-			evalScheemString('( + x (*    2 y)) ', {x:7, y:3}),
+			evalScheemString('( + x (*    2 y)) ', {bindings:{x:7, y:3}, outer:{}}),
 			13
 		);
 	});

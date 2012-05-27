@@ -119,6 +119,14 @@ var cdr = function (list) {
 	return list.slice(1);
 };
 
+var scheemAlert = function (message) {
+	if (typeof module !== 'undefined') {
+		console.log(message);
+	} else {
+		window.alert(message);
+	}
+};
+
 var builtinFunctions = {
 	'+': add,
 	'-': subtract,
@@ -130,7 +138,9 @@ var builtinFunctions = {
 
 	'cons': cons,
 	'car': car,
-	'cdr': cdr
+	'cdr': cdr,
+
+	'alert': scheemAlert
 }
 
 // Environment-related functions.

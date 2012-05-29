@@ -106,9 +106,10 @@ suite('whitespace', function() {
     test('tabs and newlines', function() {
         assert.deepEqual( parse(" (a \nb\t )\n"), ["a", "b"] );
     });
+    test('space around atom', function() {
+        assert.deepEqual( parse(" atom\n"), "atom" );
+    });
 });
-// XFAIL - vsapsai: don't know how to implement it
-//assert.equal( parse(" atom\n"), "atom" );
 
 // -- quote support
 suite('quote', function() {

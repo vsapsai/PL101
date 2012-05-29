@@ -77,5 +77,7 @@ expression =
         { return single; }
   / "(" whitespace_opt multiple:expression_list whitespace_opt ")"
         { return multiple; }
+  / "(" whitespace_opt ")"
+        { return []; }
   / whitespace_opt quote_char quoted_expression:expression
         { return ["quote", quoted_expression]; }

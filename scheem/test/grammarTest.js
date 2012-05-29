@@ -78,6 +78,10 @@ suite('expression', function() {
     test('single atom in nested parentheses', function() {
         assert.deepEqual( parse("((x))"), [["x"]] );
     });
+    test('empty parentheses', function() {
+        assert.deepEqual( parse("()"), [] );
+        assert.deepEqual( parse("( )"), [] );
+    });
 });
 
 suite('whitespace', function() {

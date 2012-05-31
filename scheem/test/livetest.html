@@ -2,45 +2,56 @@
 <head>
     <meta charset="utf-8">
     <title>Scheem Live Demo</title>
+    <link rel="stylesheet"
+        href="3rd party/bootstrap/css/bootstrap.min.css" />
     <script
         src="http://nathansuniversity.com/js/jquery-1.7.1.min.js">
     </script>
     <script src="../scheem.js"></script>
     <script src="../parser.js"></script>
     <style>
-        .editor {
-            width: 800px;
-            height: 300px;
+        body {
+            font-size: 15px;
+        }
+        h2, h3 {
+            margin-top: 0.75em;
         }
 
-        .console, .errors {
-            border: solid 1px;
-            min-height: 20px;
+        .editor {
+            width: 100%;
+            height: 300px;
+            margin-top: 20px;
+            font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
         }
     </style>
 </head>
 <body>
 
+<div class="container">
 <textarea id="input" class="editor">
-(= (* 2 2) 5)
+;; Input your code here
+(=
+  (* 2 2)
+  5)
 </textarea><br />
 
-<input id="submitbutton" type="button" value="Run" />
+<input id="submitbutton" type="button" class="btn primary" value="Run" />
 
 <hr/>
 Errors:
-<div id="errors" class="errors">
+<div id="errors" class="alert alert-error">
 </div>
 
 Output:
-<div id="console" class="console">
+<div id="console" class="alert alert-info">
 </div>
 
-<h1>About</h1>
+<h2>About</h2>
 This is a live Scheem interpreter demo.
 
-<h1>Examples</h1>
-<h2>Recursive factorial</h2>
+<h2>Examples</h2>
+Here are a few examples you can try to run.
+<h3>Recursive factorial</h3>
 <pre>
 (begin 
     (define factorial (lambda (x)
@@ -51,7 +62,7 @@ This is a live Scheem interpreter demo.
 )
 </pre>
 
-<h2>Function which returns function</h2>
+<h3>Function which returns function</h3>
 <pre>
 (begin
     (define make-incrementer (lambda (inc)
@@ -60,6 +71,7 @@ This is a live Scheem interpreter demo.
     (increment5 3)
 )
 </pre>
+</div>
 
 <script>
     // Utility function to log messages

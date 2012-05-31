@@ -1,23 +1,23 @@
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Scheem Live Demo</title>
-  <script src=
-    "http://nathansuniversity.com/js/jquery-1.7.1.min.js">
-  </script>
-  <script src="../scheem.js"></script>
-  <script src="../parser.js"></script>
-  <style>
-	  .editor {
-		  width: 800px;
-		  height: 300px;
-	  }
+    <meta charset="utf-8">
+    <title>Scheem Live Demo</title>
+    <script
+        src="http://nathansuniversity.com/js/jquery-1.7.1.min.js">
+    </script>
+    <script src="../scheem.js"></script>
+    <script src="../parser.js"></script>
+    <style>
+        .editor {
+            width: 800px;
+            height: 300px;
+        }
 
-	  .console, .errors {
-		  border: solid 1px;
-		  min-height: 20px;
-	  }
-  </style>
+        .console, .errors {
+            border: solid 1px;
+            min-height: 20px;
+        }
+    </style>
 </head>
 <body>
 
@@ -43,56 +43,56 @@ This is a live Scheem interpreter demo.
 <h2>Recursive factorial</h2>
 <pre>
 (begin 
-  (define factorial (lambda (x)
-    (if (= x 0)
-      1
-      (* x (factorial (- x 1))))))
-  (factorial 3)
+    (define factorial (lambda (x)
+        (if (= x 0)
+            1
+            (* x (factorial (- x 1))))))
+    (factorial 3)
 )
 </pre>
 
 <h2>Function which returns function</h2>
 <pre>
 (begin
-  (define make-incrementer (lambda (inc)
-    (lambda (x) (+ x inc))))
-  (define increment5 (make-incrementer 5))
-  (increment5 3)
+    (define make-incrementer (lambda (inc)
+        (lambda (x) (+ x inc))))
+    (define increment5 (make-incrementer 5))
+    (increment5 3)
 )
 </pre>
 
 <script>
-  // Utility function to log messages
-  var log_console = function(msg) {
-      $('#console').append('<p>' + msg + '</p>');
-  };
-  var log_error = function(msg) {
-	  $('#errors').append('<p>' + msg + '</p>');
-  };
+    // Utility function to log messages
+    var log_console = function(msg) {
+            $('#console').append('<p>' + msg + '</p>');
+    };
+    var log_error = function(msg) {
+        $('#errors').append('<p>' + msg + '</p>');
+    };
 
-  // After page load
-  $(function() {
-    $('#submitbutton').click(function() {
-        var user_text = $('#input').val();
-        $('#console').html(''); // clear console
-		$('#errors').html('');
-        //log_console('Your input was: "' + user_text + '"');
-        try {
-            var parsed = SCHEEM.parse(user_text);
-            log_console('Parsed: ' + JSON.stringify(parsed));
-            try {
-                var result = evalScheem(parsed, {});
-                log_console('Result: ' + JSON.stringify(result));
-            }
-            catch(e) {
-                log_error('Eval Error: ' + e);
-            }
-        }
-        catch(e) {
-            log_error('Parse Error: ' + e);
-        }
+    // After page load
+    $(function() {
+        $('#submitbutton').click(function() {
+                var user_text = $('#input').val();
+                $('#console').html(''); // clear console
+        $('#errors').html('');
+                //log_console('Your input was: "' + user_text + '"');
+                try {
+                        var parsed = SCHEEM.parse(user_text);
+                        log_console('Parsed: ' + JSON.stringify(parsed));
+                        try {
+                                var result = evalScheem(parsed, {});
+                                log_console('Result: ' + JSON.stringify(result));
+                        }
+                        catch(e) {
+                                log_error('Eval Error: ' + e);
+                        }
+                }
+                catch(e) {
+                        log_error('Parse Error: ' + e);
+                }
+        });
     });
-  });
 </script>
 
 </body>

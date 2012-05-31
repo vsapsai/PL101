@@ -1,52 +1,51 @@
 <html>
 <head>
-  <meta charset="utf-8">
-  <title>Mocha Tests</title>
-  <link rel="stylesheet"
-    href="http://nathansuniversity.com/css/mocha.css" />
-  <script src=
-    "http://nathansuniversity.com/js/jquery-1.7.1.min.js">
-  </script>
-  <script src=
-    "http://nathansuniversity.com/js/chai.js">
-  </script>
-  <script src="http://nathansuniversity.com/js/mocha.js">
-  </script>
-  <script src="../parser.js"></script>
-  <script src="../scheem.js"></script>
-  <script>mocha.setup('tdd')</script>
-  <script>
-// Prepare testing environment
-var expect = chai.expect;    
-var assert = chai.assert;
-  </script>
-  <script src="evalScheemTest.js"></script>
-  <script src="grammarTest.js"></script>
-  <script>
+    <meta charset="utf-8">
+    <title>Mocha Tests</title>
+    <link rel="stylesheet"
+        href="http://nathansuniversity.com/css/mocha.css" />
+    <script 
+        src="http://nathansuniversity.com/js/jquery-1.7.1.min.js">
+    </script>
+    <script
+        src="http://nathansuniversity.com/js/chai.js">
+    </script>
+    <script
+        src="http://nathansuniversity.com/js/mocha.js">
+    </script>
+    <script src="../parser.js"></script>
+    <script src="../scheem.js"></script>
+    <script>mocha.setup('tdd')</script>
+    <script>
+        // Prepare testing environment
+        var expect = chai.expect;    
+        var assert = chai.assert;
+    </script>
+    <script src="evalScheemTest.js"></script>
+    <script src="grammarTest.js"></script>
+    <script>
+        var evalScheemString = function(code, env) {
+            return evalScheem(SCHEEM.parse(code), env);
+        };
 
-var evalScheemString = function(code, env) {
-	return evalScheem(SCHEEM.parse(code), env);
-};
-
-suite('evalScheemString', function() {
-suite('simple', function() {
-	test('complex expression', function() {
-		assert.deepEqual(
-			evalScheemString('( + x (*    2 y)) ', {bindings:{x:7, y:3}, outer:{}}),
-			13
-		);
-	});
-});
-});
-
-  </script>
-  <script>
-    $(function(){
-      mocha.run();
-    });
-  </script>
+        suite('evalScheemString', function() {
+        suite('simple', function() {
+            test('complex expression', function() {
+                assert.deepEqual(
+                    evalScheemString('( + x (*    2 y)) ', {bindings:{x:7, y:3}, outer:{}}),
+                    13
+                );
+            });
+        });
+        });
+    </script>
+    <script>
+        $(function() {
+            mocha.run();
+        });
+    </script>
 </head>
 <body>
-  <div id="mocha"></div>
+    <div id="mocha"></div>
 </body>
 </html>

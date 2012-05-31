@@ -13,8 +13,7 @@ if (typeof module !== 'undefined') {
     var parse = PEG.buildParser(data).parse;
 } else {
     // Loaded in browser.
-    if (typeof assert === 'undefined')
-    {
+    if (typeof assert === 'undefined') {
         var assert = chai.assert;
     }
     var parse = SCHEEM.parse;

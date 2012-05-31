@@ -37,6 +37,7 @@ SCHEEM = (function(){
      */
     parse: function(input, startRule) {
       var parseFunctions = {
+        "start": parse_start,
         "digit": parse_digit,
         "alphachar": parse_alphachar,
         "validchar": parse_validchar,
@@ -62,7 +63,7 @@ SCHEEM = (function(){
           throw new Error("Invalid rule name: " + quote(startRule) + ".");
         }
       } else {
-        startRule = "expression";
+        startRule = "start";
       }
       
       var pos = 0;
@@ -108,6 +109,40 @@ SCHEEM = (function(){
         }
         
         rightmostFailuresExpected.push(failure);
+      }
+      
+      function parse_start() {
+        var result0, result1, result2;
+        var pos0, pos1;
+        
+        pos0 = pos;
+        pos1 = pos;
+        result0 = parse_whitespace_opt();
+        if (result0 !== null) {
+          result1 = parse_expression();
+          if (result1 !== null) {
+            result2 = parse_whitespace_opt();
+            if (result2 !== null) {
+              result0 = [result0, result1, result2];
+            } else {
+              result0 = null;
+              pos = pos1;
+            }
+          } else {
+            result0 = null;
+            pos = pos1;
+          }
+        } else {
+          result0 = null;
+          pos = pos1;
+        }
+        if (result0 !== null) {
+          result0 = (function(offset, expr) { return expr; })(pos0, result0[1]);
+        }
+        if (result0 === null) {
+          pos = pos0;
+        }
+        return result0;
       }
       
       function parse_digit() {
@@ -661,7 +696,7 @@ SCHEEM = (function(){
       }
       
       function parse_expression() {
-        var result0, result1, result2, result3, result4, result5, result6;
+        var result0, result1, result2, result3, result4;
         var pos0, pos1;
         
         pos0 = pos;
@@ -675,45 +710,33 @@ SCHEEM = (function(){
         if (result0 === null) {
           pos0 = pos;
           pos1 = pos;
-          result0 = parse_whitespace_opt();
-          if (result0 !== null) {
-            if (input.charCodeAt(pos) === 40) {
-              result1 = "(";
-              pos++;
-            } else {
-              result1 = null;
-              if (reportFailures === 0) {
-                matchFailed("\"(\"");
-              }
+          if (input.charCodeAt(pos) === 40) {
+            result0 = "(";
+            pos++;
+          } else {
+            result0 = null;
+            if (reportFailures === 0) {
+              matchFailed("\"(\"");
             }
+          }
+          if (result0 !== null) {
+            result1 = parse_whitespace_opt();
             if (result1 !== null) {
-              result2 = parse_whitespace_opt();
+              result2 = parse_expression_list();
               if (result2 !== null) {
-                result3 = parse_expression_list();
+                result3 = parse_whitespace_opt();
                 if (result3 !== null) {
-                  result4 = parse_whitespace_opt();
+                  if (input.charCodeAt(pos) === 41) {
+                    result4 = ")";
+                    pos++;
+                  } else {
+                    result4 = null;
+                    if (reportFailures === 0) {
+                      matchFailed("\")\"");
+                    }
+                  }
                   if (result4 !== null) {
-                    if (input.charCodeAt(pos) === 41) {
-                      result5 = ")";
-                      pos++;
-                    } else {
-                      result5 = null;
-                      if (reportFailures === 0) {
-                        matchFailed("\")\"");
-                      }
-                    }
-                    if (result5 !== null) {
-                      result6 = parse_whitespace_opt();
-                      if (result6 !== null) {
-                        result0 = [result0, result1, result2, result3, result4, result5, result6];
-                      } else {
-                        result0 = null;
-                        pos = pos1;
-                      }
-                    } else {
-                      result0 = null;
-                      pos = pos1;
-                    }
+                    result0 = [result0, result1, result2, result3, result4];
                   } else {
                     result0 = null;
                     pos = pos1;
@@ -735,7 +758,7 @@ SCHEEM = (function(){
             pos = pos1;
           }
           if (result0 !== null) {
-            result0 = (function(offset, multiple) { return multiple; })(pos0, result0[3]);
+            result0 = (function(offset, multiple) { return multiple; })(pos0, result0[2]);
           }
           if (result0 === null) {
             pos = pos0;
@@ -743,11 +766,27 @@ SCHEEM = (function(){
           if (result0 === null) {
             pos0 = pos;
             pos1 = pos;
-            result0 = parse_whitespace_opt();
+            if (input.charCodeAt(pos) === 40) {
+              result0 = "(";
+              pos++;
+            } else {
+              result0 = null;
+              if (reportFailures === 0) {
+                matchFailed("\"(\"");
+              }
+            }
             if (result0 !== null) {
-              result1 = parse_quote_char();
+              result1 = parse_whitespace_opt();
               if (result1 !== null) {
-                result2 = parse_expression();
+                if (input.charCodeAt(pos) === 41) {
+                  result2 = ")";
+                  pos++;
+                } else {
+                  result2 = null;
+                  if (reportFailures === 0) {
+                    matchFailed("\")\"");
+                  }
+                }
                 if (result2 !== null) {
                   result0 = [result0, result1, result2];
                 } else {
@@ -763,10 +802,39 @@ SCHEEM = (function(){
               pos = pos1;
             }
             if (result0 !== null) {
-              result0 = (function(offset, quoted_expression) { return ["quote", quoted_expression]; })(pos0, result0[2]);
+              result0 = (function(offset) { return []; })(pos0);
             }
             if (result0 === null) {
               pos = pos0;
+            }
+            if (result0 === null) {
+              pos0 = pos;
+              pos1 = pos;
+              result0 = parse_whitespace_opt();
+              if (result0 !== null) {
+                result1 = parse_quote_char();
+                if (result1 !== null) {
+                  result2 = parse_expression();
+                  if (result2 !== null) {
+                    result0 = [result0, result1, result2];
+                  } else {
+                    result0 = null;
+                    pos = pos1;
+                  }
+                } else {
+                  result0 = null;
+                  pos = pos1;
+                }
+              } else {
+                result0 = null;
+                pos = pos1;
+              }
+              if (result0 !== null) {
+                result0 = (function(offset, quoted_expression) { return ["quote", quoted_expression]; })(pos0, result0[2]);
+              }
+              if (result0 === null) {
+                pos = pos0;
+              }
             }
           }
         }

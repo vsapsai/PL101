@@ -1,8 +1,5 @@
 start
-	= integer
-
-integer
-	= "44"
+	= "4" / "42"
 
 //integer "integer"
 //	= digits:[0-9]+

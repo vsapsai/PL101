@@ -56,10 +56,11 @@ var DefaultRandomnessProvider = {
 	}
 };
 
-function rewriteRule(expression) {
+function rewriteRule(expression, randomnessProvider) {
 	var rewriteFunctions = {
 		"rule_ref": rewrite_rule_ref,
 		"literal": rewrite_literal,
+		"choice": rewrite_choice,
 	};
 	function rewrite_rule_ref(expression) {
 		check(typeof expression.name === "string", "Invalid rule_ref expression");
@@ -68,12 +69,17 @@ function rewriteRule(expression) {
 	function rewrite_literal(expression) {
 		return [makeNode(TERMINAL_SYMBOL, expression.value)];
 	};
+	function rewrite_choice(expression, randomnessProvider) {
+		var alternativeIndex = randomnessProvider.randomInt(expression.alternatives.length);
+		var chosenAlternative = expression.alternatives[alternativeIndex];
+		return rewriteRule(chosenAlternative, randomnessProvider);
+	};
 
 	check(typeof expression.type === "string", "Invalid expression");
 	var expressionType = expression.type;
 	check(rewriteFunctions.hasOwnProperty(expressionType), "Unknown expression type");
 	var rewriteFunction = rewriteFunctions[expressionType];
-	return rewriteFunction(expression);
+	return rewriteFunction(expression, randomnessProvider);
 };
 
 LanguageGenerator.buildGenerator = function(grammar) {
@@ -111,7 +117,7 @@ LanguageGenerator.buildGenerator = function(grammar) {
 
 			// Rewrite picked non-terminal.
 			var expression = this.rules[nodeToRewrite.value];
-			nodeToRewrite.children = rewriteRule(expression);
+			nodeToRewrite.children = rewriteRule(expression, randomnessProvider);
 			rewritesCount++;
 
 			// Prepare for the next loop of cycle.

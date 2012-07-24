@@ -1,6 +1,9 @@
 start
 	= integer
 
-integer "integer"
-	= digits:[0-9]+
-		{ return parseInt(digits.join(""), 10); }
+integer
+	= "44"
+
+//integer "integer"
+//	= digits:[0-9]+
+//		{ return parseInt(digits.join(""), 10); }

@@ -2,11 +2,13 @@
 <head>
     <meta charset="utf-8">
     <title>Scheem Live Demo</title>
-    <link rel="stylesheet"
-        href="3rd party/bootstrap/css/bootstrap.min.css" />
-    <script
-        src="http://nathansuniversity.com/js/jquery-1.7.1.min.js">
-    </script>
+    <link rel="stylesheet" href="3rd party/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="3rd party/CodeMirror2/lib/codemirror.css" />
+
+    <script src="http://nathansuniversity.com/js/jquery-1.7.1.min.js"></script>
+    <script src="3rd party/CodeMirror2/lib/codemirror.js"></script>
+    <script src="3rd party/CodeMirror2/mode/javascript/javascript.js"></script>
+
     <script src="../scheem.js"></script>
     <script src="../parser.js"></script>
     <style>
@@ -17,25 +19,34 @@
             margin-top: 0.75em;
         }
 
-        .editor {
-            width: 100%;
-            height: 300px;
-            margin-top: 20px;
-            font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
+        .editorContainer {
+            margin: 20px 0px 9px 0px;
+        }
+        .CodeMirror-gutter {
+            width: 3em;
+        }
+        .CodeMirror {
+            border: 1px solid #aaa;
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-<textarea id="input" class="editor">
+<form class="editorContainer"><textarea id="code">
 ;; Input your code here
 (=
   (* 2 2)
   5)
-</textarea><br />
+</textarea></form>
 
 <input id="submitbutton" type="button" class="btn primary" value="Run" />
+
+<script>
+    var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+        lineNumbers: true,
+    });
+</script>
 
 <hr/>
 Errors:
@@ -85,7 +96,7 @@ Here are a few examples you can try to run.
     // After page load
     $(function() {
         $('#submitbutton').click(function() {
-                var user_text = $('#input').val();
+                var user_text = $('#code').val();
                 $('#console').html(''); // clear console
         $('#errors').html('');
                 //log_console('Your input was: "' + user_text + '"');
